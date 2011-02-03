@@ -15,8 +15,14 @@ def check_image(cnx, server_id):
     sys.stdout.write("\b" * (toolbar_width+1)) # return to start of line, after '['
 
     while cnx.servers.get(server_id).status != "ACTIVE":
-        if cnx.servers.get(server_id).status == "ACTIVE":
+        status=cnx.servers.get(server_id).status
+        if status  == "ACTIVE":
             break
+        elif status == "ERROR":
+            print
+            print "We have an error while building which is unfortunate, you may have to restart the process again and contact cloud support providing this id: %s"  % (server_id)
+            sys.exit(1)
+            
         time.sleep(0.5) # do real work here
         sys.stdout.write("-")
         sys.stdout.flush()
