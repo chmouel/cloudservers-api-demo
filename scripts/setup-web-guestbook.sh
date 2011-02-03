@@ -1,5 +1,11 @@
 #!/bin/bash
 #TODO: Networking
+GUESTBOOK_DBPASS=$1
+
+if [[ -z ${GUESTBOOK_DBPASS} ]];then
+    GUESTBOOK_DBPASS="blaha331002"
+fi
+
 set -e
 export DEBIAN_FRONTEND=noninteractive
 aptitude -y install ufw lighttpd php5-cgi php5-mysql unzip mysql-client ddclient
@@ -8,7 +14,7 @@ cat <<EOF>~/.my.cnf
 [client]
 user = guestbook
 database = guestbook
-password = blaha331002
+password = ${GUESTBOOK_DBPASS}
 host = demo-db1
 EOF
 
@@ -28,7 +34,7 @@ cat <<EOF>>inc/config.php
 <?php
 define('JB_MYSQL_HOST', 'demo-db1');
 define('JB_MYSQL_USERNAME', 'guestbook');
-define('JB_MYSQL_PASSWORD', 'blaha331002');
+define('JB_MYSQL_PASSWORD', '${GUESTBOOK_DBPASS}');
 define('JB_MYSQL_DATABASE', 'guestbook');
 define('JB_MYSQL_TABLE', 'gbtable');
 ?>
