@@ -33,4 +33,4 @@ ufw --force enable
 
 restart mysql
 
-/etc/init.d/ddclient restart
+#/etc/init.d/ddclient restart
