@@ -19,12 +19,12 @@ if [[ -e ${TEMP_FILE} ]];then
 fi
 touch ${TEMP_FILE}
 
-WEB_IP=$(python ./cloudservers/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
-DB_IP=$(python ./cloudservers/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
+WEB_IP=$(python ./python/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
+DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
 
 [[ -z ${WEB_IP} ]] && clean_up
 
-./cloudservers/backup.py -s "demo-web1 demo-db1" -f -D -b backupprefix
+./python/backup.py -s "demo-web1 demo-db1" -f -D -b backupprefix
 
 rm -f ${TEMP_FILE}
 

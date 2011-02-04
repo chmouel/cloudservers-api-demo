@@ -9,14 +9,14 @@ if [[ -e config ]];then
 fi
 
 for name in demo-web1 demo-db1;do
-    python cloudservers/create.py -n ${name} -i 69 -f 1
+    python python/create.py -n ${name} -i 69 -f 1
 done
 
-WEB_IP=$(python ./cloudservers/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
-DB_IP=$(python ./cloudservers/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
+WEB_IP=$(python ./python/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
+DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
 
-ADMIN_DBPASS=$(python ./cloudservers/generatepassword.py)
-GUESTBOOK_DBPASS=$(python ./cloudservers/generatepassword.py)
+ADMIN_DBPASS=$(python ./python/generatepassword.py)
+GUESTBOOK_DBPASS=$(python ./python/generatepassword.py)
 
 scp scripts/setup-web-guestbook.sh scripts/adjust-web-networking.sh root@${WEB_IP}:
 ssh -t root@${WEB_IP} ./setup-web-guestbook.sh ${GUESTBOOK_DBPASS}
