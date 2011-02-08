@@ -64,7 +64,7 @@ def backup_list_of_servers():
     if not options.force:
         answer = i_am_about("Do you want to backup servers [Yn]: ", server_list)
 
-        if not answer or answer.lower() == 'n':
+        if not answer:
             return
 
     if options.backup_prefix:
