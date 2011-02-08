@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import tempfile
 from subprocess import call
 from optparse import OptionParser
 
@@ -51,6 +52,12 @@ opparser.add_option('-B', '--no-bootstrap',
                     default=True,
                     help="No Bootstraping basic configuration")
 
+opparser.add_option('-s', '--script',
+                    action="store",
+                    dest="script",
+                    metavar="FILE",
+                    help="Launch this additional file on server after creation")
+
 opparser.add_option('-D', '--delete_image',
                     action="store_true",
                     default=False,
@@ -58,6 +65,10 @@ opparser.add_option('-D', '--delete_image',
 
 
 (options, args) = opparser.parse_args() # pylint: disable-msg=W0612
+
+if options.script and not os.path.exists(options.script):
+    print "%s not exist" % (options.script)
+    sys.exit(1)
 
 if options.name:
     IMAGE_NAME=options.name
@@ -97,10 +108,20 @@ if options.delete_image:
     print "Deleting image of server"
     CNX.images.delete(IMAGE_TYPE)
 
-if options.bootstrap:
-    public_ip=cstype.public_ip
+def copy_exec_script(public_ip, script):
     ssh_options = ['-q', '-t', '-o StrictHostKeyChecking=no', '-o UserKnownHostsFile=/dev/null']
-    call('ssh %s root@%s "sudo apt-get -y install curl  && curl http://www.chmouel.com/pub/bootstrap.sh|sh -"' % (" ".join(ssh_options), public_ip), shell=True)
+    scp_options = ssh_options.remove('-t')
+    
+    tmpname=os.path.join("/tmp", os.path.basename(tempfile.mktemp("-cloudscripts")))
+    call('scp %s %s root@%s:%s' % (" ".join(ssh_options), script, public_ip, tmpname), shell=True)
+    call('ssh %s root@%s "%s && rm -f %s"' %  (" ".join(ssh_options), public_ip, tmpname, tmpname), shell=True)
+
+if options.bootstrap:
+    bootstrap_script=os.path.join(os.path.dirname(__file__), "..", "scripts", "bootstrap.sh")
+    copy_exec_script(cstype.public_ip, bootstrap_script)
+
+if options.script:
+    copy_exec_script(cstype.public_ip, options.script)
 
 open("/tmp/server-installed.txt", 'a').write("%s - root@%s -- Password: %s\n" % (cstype.name, cstype.public_ip, cstype.adminPass))
 print
