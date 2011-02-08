@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 __author__ = "Chmouel Boudjnah <chmouel@chmouel.com>"
+from servers import Servers
+
 class ChooseServer(object):
     def __init__(self, CNX=None):
         self.cnx=CNX
         if not self.cnx:
             from common import CNX
             self.cnx = CNX
-        self.servers = self.cnx.servers.list()
+        _s = Servers(self.cnx)
+        self.servers = _s()
         
     def match_server_to_sorted_number(self, ans):
         ret=None
@@ -23,7 +26,7 @@ class ChooseServer(object):
     def get_list_of_servers(self, ans=None):
         if not ans:
             i=0
-            for server in sorted(self.servers):
+            for server in self.servers:
                 print "%d) %s" % (i, server.name)
                 i+=1
 
