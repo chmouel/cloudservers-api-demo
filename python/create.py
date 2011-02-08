@@ -3,7 +3,11 @@ import os
 import sys
 from subprocess import call
 from optparse import OptionParser
+
 from lib.common import CNX
+from lib.images import Images
+
+bootstrap=True
 
 def check_image(cnx, server_id):
     import time
@@ -41,9 +45,10 @@ opparser.add_option('-f', '--flavor_id',
                     type='int',
                     help="Flavor ID.")
 
-opparser.add_option('-B', '--no_bootstrap',
-                    action="store_true",
-                    default=False,
+opparser.add_option('-B', '--no-bootstrap',
+                    action="store_false",
+                    dest="bootstrap",
+                    default=True,
                     help="No Bootstraping basic configuration")
 
 opparser.add_option('-D', '--delete_image',
@@ -57,7 +62,6 @@ opparser.add_option('-D', '--delete_image',
 if options.name:
     IMAGE_NAME=options.name
 else:
-
     ans = raw_input("VM Name: ")
     if not ans.strip():
       print "I need a name. exiting."
@@ -67,16 +71,18 @@ else:
 if options.id:
     IMAGE_TYPE=options.id
 else:
-    for i in CNX.images.list():
-        print "%s) %s" % (i.id, i.name)
-    IMAGE_TYPE = int(raw_input("Choose Image ID: "))
+    image = Images(CNX)
+
+    for i in image():
+        print "%8s) %s" % (i.id, i.name)
+    IMAGE_TYPE = int(raw_input("Choose an Image ID: "))
 
 if options.flavor_id:
     IMAGE_FLAVOUR_ID=options.flavor_id
 else:
     for i in CNX.flavors.list():
         print "%s) %s" % (i.id, i.name)
-    IMAGE_FLAVOUR_ID = int(raw_input("Choose Flavor ID: "))
+    IMAGE_FLAVOUR_ID = int(raw_input("Choose a Flavor ID: "))
 
 print "Creating Image, please wait...."
 cstype = CNX.servers.create(image=IMAGE_TYPE,
@@ -91,7 +97,7 @@ if options.delete_image:
     print "Deleting image of server"
     CNX.images.delete(IMAGE_TYPE)
 
-if not options.no_bootstrap:
+if options.bootstrap:
     public_ip=cstype.public_ip
     ssh_options = ['-q', '-t', '-o StrictHostKeyChecking=no', '-o UserKnownHostsFile=/dev/null']
     call('ssh %s root@%s "sudo apt-get -y install curl  && curl http://www.chmouel.com/pub/bootstrap.sh|sh -"' % (" ".join(ssh_options), public_ip), shell=True)
