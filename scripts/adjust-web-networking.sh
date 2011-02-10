@@ -24,8 +24,8 @@ fi
 if ! grep -s -w 22 /lib/ufw/user.rules;then
     #first time
     ufw allow proto tcp from any to any port 22
-    ufw allow proto tcp from any to any port 80
-    ufw --force enable
 fi
+
+ufw allow 80
 
 /etc/init.d/ddclient restart
