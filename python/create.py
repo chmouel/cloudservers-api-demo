@@ -36,7 +36,8 @@ def check_image(cnx, server_id):
 
 opparser = OptionParser(usage="create_vm [container]")
 opparser.add_option('-n', '--name',
-                      help="VM Name.")
+                    type='str',
+                    help="VM Name.")
 
 opparser.add_option('-i', '--id',
                     type='int',
