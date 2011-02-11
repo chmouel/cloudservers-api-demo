@@ -24,7 +24,7 @@ sed -i -n '/bind-address/ { s/127.0.0.1/0.0.0.0/ };p' /etc/mysql/my.cnf
 restart mysql
 
 mysqladmin create guestbook
-mysql -e "grant all privileges on guestbook.* to guestbook@'demo-web1' identified by '${GUESTBOOK_DBPASS}'"
+mysql -e "grant all privileges on guestbook.* to guestbook@'%' identified by '${GUESTBOOK_DBPASS}'"
 
 
 exit
