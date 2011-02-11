@@ -58,4 +58,4 @@ password='rackspace'
 demo-web1.dyndns.info
 
 EOF
-/etc/init.d/ddclient start
+service ddclient restart
