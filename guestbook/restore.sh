@@ -19,7 +19,6 @@ if [[ -e ${TEMP_FILE} ]];then
 fi
 touch ${TEMP_FILE}
 
-
 WEB_IMAGE_ID=$(python ./python/list-images.py | sed -n '/demo-web1/ { s/-.*//;s/ $//;p;}')
 DB_IMAGE_ID=$(python ./python/list-images.py | sed -n '/demo-db1/ { s/-.*//;s/ $//;p;}')
 
@@ -28,11 +27,13 @@ DB_IMAGE_ID=$(python ./python/list-images.py | sed -n '/demo-db1/ { s/-.*//;s/ $
 ./python/create.py -B -n demo-web1 -i ${WEB_IMAGE_ID} -f 1 -D  
 ./python/create.py -B -n demo-db1 -i ${DB_IMAGE_ID} -f 1 -D  
 
-WEB_IP=$(python ./python/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
-DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
+PUBLIC_WEB_IP=$(./python/info.py -s demo-web1|sed -n '/PublicIP/ { s/.*: //;p}')
+PUBLIC_DB_IP=$(./python/info.py -s demo-db1|sed -n '/PublicIP/ { s/.*: //;p}')
+PRIVATE_WEB_IP=$(./python/info.py -s demo-web1|sed -n '/PrivateIP/ { s/.*: //;p}')
+PRIVATE_DB_IP=$(./python/info.py -s demo-db1|sed -n '/PrivateIP/ { s/.*: //;p}')
 
-ssh -t root@${WEB_IP} ./web-networking.sh demo-db1 ${DB_IP}
-ssh -t root@${DB_IP} ./db-networking.sh demo-web1 ${WEB_IP}
+ssh -t root@${PUBLIC_WEB_IP} ./web-networking.sh demo-db1 ${PRIVATE_DB_IP}
+ssh -t root@${PUBLIC_DB_IP} ./db-networking.sh demo-web1 ${PRIVATE_WEB_IP}
 
 rm -f ${TEMP_FILE}
 
