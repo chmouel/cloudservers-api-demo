@@ -54,35 +54,54 @@ function setup_nodes() {
             continue
         fi
 
-        scp ${mydir}/store-load-avg.py ${mydir}/setup-node.sh root@${ip}:/usr/local/bin/
-        scp ${mydir}/tmp/config.php root@${ip}:/etc/apidemo-config.php
+        echo -n "Copying files to ${name}: "
+        scp -q ${mydir}/store-load-avg.py ${mydir}/setup-node.sh root@${ip}:/usr/local/bin/
+        scp -q ${mydir}/tmp/config.php root@${ip}:/etc/apidemo-config.php
+        echo "done."
         
-        ssh -t root@${ip} "/usr/local/bin/setup-node.sh" ${PRIVATE_LOADBALANCER_IP}
+        echo -n "Starting setup for ${name}: "
+        ssh -q -t root@${ip} "/usr/local/bin/setup-node.sh" ${PRIVATE_LOADBALANCER_IP} >>/tmp/log 2>/tmp/error
+        echo "done."
 
-        scp ${mydir}/CF_Cached.php root@${ip}:/var/www/index.php
+        echo -n "Copying cloudfiles wrapper to ${name}: "
+        scp -q ${mydir}/CF_Cached.php root@${ip}:/var/www/index.php
+        echo "done."
     done
 }
 
 function setup_loadbalancer() {
-    scp ${mydir}/setup-loadbalancer.sh ${mydir}/rscloud.py ${mydir}/dynamic-host.py root@${LOADBALANCER_IP}:/usr/local/bin/
-    ssh -t root@${LOADBALANCER_IP} "/usr/local/bin/setup-loadbalancer.sh ${USER} ${API_KEY} ${AURL}"
+    echo -n "Copying files to loadbalancer: "
+    scp -q ${mydir}/setup-loadbalancer.sh ${mydir}/rscloud.py ${mydir}/dynamic-host.py root@${LOADBALANCER_IP}:/usr/local/bin/
+    echo "done."
+
+    echo -n "Setting up loadbalancer: "
+    ssh -t root@${LOADBALANCER_IP} "/usr/local/bin/setup-loadbalancer.sh ${USER} ${API_KEY} ${AURL}" >>/tmp/log 2>/tmp/error
+    echo "done."
 }
 
 function save_first_image() {
-    ./python/backup.py -s loadbalanced1 -f -b "saved-"
+    echo -n "Backuping as image loadbalanced1: "
+    ./python/backup.py -s loadbalanced1 -f -b "saved" >>/tmp/log 2>/tmp/error
+    echo "done."
 }
 
 function create_servers() {
-   ./python/create.py -n loadbalancer.rackspace.co.uk -f 1 -i 69
+    echo -n "Creating loadbalancer: "
+    ./python/create.py -n loadbalancer.rackspace.co.uk -f 1 -i 69 >>/tmp/log 2>/tmp/error
+    echo "done."
     c=1
     while true;do
-        ./python/create.py -n loadbalanced${c}.rackspace.co.uk -f 1 -i 69;
+        echo -n "Creating loadbalanced${c}: "
+        ./python/create.py -n loadbalanced${c}.rackspace.co.uk -f 1 -i 69 >>/tmp/log 2>/tmp/error
+        echo " done."
         [[ $c == ${NUM_NODES} ]] && break
         (( c++ ))
     done
 }
 
+echo -n "Preparing file configuration: "
 prepare_config_php_file
+echo "done."
 create_servers
 setup_nodes
 save_first_image
