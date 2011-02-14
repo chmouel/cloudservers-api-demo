@@ -18,11 +18,11 @@ DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p
 ADMIN_DBPASS=$(python ./python/generatepassword.py)
 GUESTBOOK_DBPASS=$(python ./python/generatepassword.py)
 
-scp scripts/setup-web-guestbook.sh scripts/adjust-web-networking.sh root@${WEB_IP}:
-ssh -t root@${WEB_IP} ./setup-web-guestbook.sh ${GUESTBOOK_DBPASS}
-ssh -t root@${WEB_IP} ./adjust-web-networking.sh demo-db1 ${DB_IP}
+scp guestbook/web-setup.sh guestbook/web-networking.sh root@${WEB_IP}:
+ssh -t root@${WEB_IP} ./web-setup.sh ${GUESTBOOK_DBPASS}
+ssh -t root@${WEB_IP} ./web-networking.sh demo-db1 ${DB_IP}
 
-scp scripts/setup-db.sh scripts/adjust-db-networking.sh root@${DB_IP}:
-ssh -t root@${DB_IP} ./setup-db.sh ${ADMIN_DBPASS} ${GUESTBOOK_DBPASS}
-ssh -t root@${DB_IP} ./adjust-db-networking.sh demo-web1 ${WEB_IP}
+scp guestbook/db-setup.sh guestbook/db-networking.sh root@${DB_IP}:
+ssh -t root@${DB_IP} ./db-setup.sh ${ADMIN_DBPASS} ${GUESTBOOK_DBPASS}
+ssh -t root@${DB_IP} ./db-networking.sh demo-web1 ${WEB_IP}
 

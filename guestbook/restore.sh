@@ -31,8 +31,8 @@ DB_IMAGE_ID=$(python ./python/list-images.py | sed -n '/demo-db1/ { s/-.*//;s/ $
 WEB_IP=$(python ./python/list-servers.py | sed -n '/demo-web1/ { s/.*- //;s/ $//;p;}')
 DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p;}')
 
-ssh -t root@${WEB_IP} ./adjust-web-networking.sh demo-db1 ${DB_IP}
-ssh -t root@${DB_IP} ./adjust-db-networking.sh demo-web1 ${WEB_IP}
+ssh -t root@${WEB_IP} ./web-networking.sh demo-db1 ${DB_IP}
+ssh -t root@${DB_IP} ./db-networking.sh demo-web1 ${WEB_IP}
 
 rm -f ${TEMP_FILE}
 

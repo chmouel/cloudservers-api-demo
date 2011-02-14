@@ -27,5 +27,3 @@ DB_IP=$(python ./python/list-servers.py | sed -n '/demo-db1/ { s/.*- //;s/ $//;p
 ./python/backup.py -s "demo-web1 demo-db1" -f -D -b backupprefix
 
 rm -f ${TEMP_FILE}
-
-
