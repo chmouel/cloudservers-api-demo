@@ -1,2 +1,3 @@
-Step Progress
+Step Progress.
 Remove scripts and place in each directory.
+Fix ordering bug.
