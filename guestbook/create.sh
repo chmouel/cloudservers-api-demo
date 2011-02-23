@@ -2,6 +2,12 @@
 cd $(python -c 'import os,sys;print os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[1])))'  $0)
 set -e
 
+python python/list-servers.py|egrep -q 'demo-(web1|db1)' && {
+    echo "Servers are already created"
+    echo "You probably want to do some cleanup before!"
+    exit
+}
+
 echo "Starting guestbook demo. [Hint] tail /tmp/guestbook.log to see
 detailled output or /tmp/guestbook-error.log for error log."
 
@@ -20,10 +26,12 @@ for name in demo-web1 demo-db1;do
     echo "done."
 done
 
+echo -n "Getting network Information: "
 PUBLIC_WEB_IP=$(./python/info.py -s demo-web1|sed -n '/PublicIP/ { s/.*: //;p}')
 PUBLIC_DB_IP=$(./python/info.py -s demo-db1|sed -n '/PublicIP/ { s/.*: //;p}')
 PRIVATE_WEB_IP=$(./python/info.py -s demo-web1|sed -n '/PrivateIP/ { s/.*: //;p}')
 PRIVATE_DB_IP=$(./python/info.py -s demo-db1|sed -n '/PrivateIP/ { s/.*: //;p}')
+echo "done."
 
 ADMIN_DBPASS=$(python ./python/generatepassword.py)
 GUESTBOOK_DBPASS=$(python ./python/generatepassword.py)
