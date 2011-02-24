@@ -324,7 +324,7 @@ class ScheduledTask(object):
             print "End time cannot be before Start time"
             return
         self.mclient.set("demo-cron-end", time.mktime(end_time.timetuple()))
-        self.run_daemon()
+        #self.run_daemon()
 
     def main(self):
         opparser = optparse.OptionParser(
