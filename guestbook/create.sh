@@ -37,7 +37,7 @@ ADMIN_DBPASS=$(python ./python/generatepassword.py)
 GUESTBOOK_DBPASS=$(python ./python/generatepassword.py)
 
 echo -n "Copying files to webserver: "
-scp -q guestbook/web-setup.sh guestbook/web-networking.sh root@${PUBLIC_WEB_IP}:
+scp -q guestbook/scripts/web-setup.sh guestbook/scripts/web-networking.sh root@${PUBLIC_WEB_IP}:
 echo "done."
 echo -n "Setup webserver: "
 ssh -t root@${PUBLIC_WEB_IP} ./web-setup.sh ${GUESTBOOK_DBPASS} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
@@ -47,7 +47,7 @@ ssh -t root@${PUBLIC_WEB_IP} ./web-networking.sh demo-db1 ${PRIVATE_DB_IP} >>/tm
 echo "done."
 
 echo -n "Copying files to dbserver: "
-scp -q guestbook/db-setup.sh guestbook/db-networking.sh root@${PUBLIC_DB_IP}:
+scp -q guestbook/scripts/db-setup.sh guestbook/scripts/db-networking.sh root@${PUBLIC_DB_IP}:
 echo "done."
 echo -n "Setup db: "
 ssh -t root@${PUBLIC_DB_IP} ./db-setup.sh ${ADMIN_DBPASS} ${GUESTBOOK_DBPASS} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
