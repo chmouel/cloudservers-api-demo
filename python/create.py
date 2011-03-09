@@ -115,7 +115,7 @@ def copy_exec_script(public_ip, script):
     
     tmpname=os.path.join("/tmp", os.path.basename(tempfile.mktemp("-cloudscripts")))
     call('scp %s %s root@%s:%s' % (" ".join(ssh_options), script, public_ip, tmpname), shell=True)
-    call('ssh %s root@%s "%s && rm -f %s"' %  (" ".join(ssh_options), public_ip, tmpname, tmpname), shell=True)
+    call('ssh -x %s root@%s "%s && rm -f %s"' %  (" ".join(ssh_options), public_ip, tmpname, tmpname), shell=True)
 
 if options.bootstrap:
     bootstrap_script=os.path.join(os.path.dirname(__file__), "..", "scripts", "bootstrap.sh")
@@ -125,6 +125,8 @@ if options.script:
     copy_exec_script(cstype.public_ip, options.script)
 
 open("/tmp/server-installed.txt", 'a').write("%s - root@%s -- Password: %s\n" % (cstype.name, cstype.public_ip, cstype.adminPass))
-print
-print
-print "ssh %s -- Password: %s" % ( cstype.public_ip, cstype.adminPass)
+
+if not options.script:
+    print
+    print
+    print "ssh %s -- Password: %s" % ( cstype.public_ip, cstype.adminPass)
