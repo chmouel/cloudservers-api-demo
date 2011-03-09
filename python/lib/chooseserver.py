@@ -26,7 +26,7 @@ class ChooseServer(object):
     def get_list_of_servers(self, ans=None):
         if not ans:
             i=0
-            for server in self.servers:
+            for server in sorted(self.servers):
                 print "%d) %s" % (i, server.name)
                 i+=1
 
