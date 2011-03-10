@@ -391,7 +391,7 @@ class ScheduledTask(object):
         elif options.cleanup:
             self.cleanup()
         elif options.hard_cleanup:
-            print "TODO: This should get implemented"
+            self.hard_cleanup()
             return
         #self.hard_cleanup()
         elif options.daemon:
@@ -410,6 +410,14 @@ class ScheduledTask(object):
              "demo-cron-end", "demo-cron-start"]
         for t in s:
             self.mclient.delete(t)
+
+    def hard_cleanup(self):
+        self.cleanup()
+        self.get_cnx()
+        for x in self.cnx.servers.list():
+            if x.name in SERVER_NAMES:
+                print "Deleting: %s" % (x.name)
+                x.delete()
 
     def ssprint(self, s):
         if self.options.verbose:
