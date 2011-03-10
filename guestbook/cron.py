@@ -425,6 +425,7 @@ class ScheduledTask(object):
             sys.stdout.flush()
 
     def run_daemon(self):
+        print "Starting Schedulers, press Control-c to finish it."
         while True:
             mdstart = self.mclient.get("demo-cron-start")
             mdend = self.mclient.get("demo-cron-end")
