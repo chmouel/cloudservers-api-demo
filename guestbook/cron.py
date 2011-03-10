@@ -473,7 +473,14 @@ class ScheduledTask(object):
                         continue
                 self.ssprint("Restoring servers from backup: ")
                 self.do_restore()
-                self.ssprint("Done. Go to http://demo-web1.dyndns.info\n")
+
+                ip = None
+                for x in self.cnx.servers.list():
+                    if x.name == "demo-web1":
+                        ip = x._info['addresses']['public'][0]
+                self.ssprint("\nServers has been restored, " + \
+                "Go to http://demo-web1.dyndns.info or http://%s\n" \
+                                 % (ip))
             else:
                 if self.options.verbose:
                     iscreated = self.is_server_created()

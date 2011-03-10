@@ -57,4 +57,4 @@ ssh -t root@${PUBLIC_DB_IP} ./db-networking.sh demo-web1 ${PRIVATE_WEB_IP} >>/tm
 echo "done."
 
 echo "----------"
-echo "Guestbook application up and running at http://demo-web1.dyndns.info"
+echo "Guestbook application up and running at http://demo-web1.dyndns.info or http://${PUBLIC_WEB_IP}"
