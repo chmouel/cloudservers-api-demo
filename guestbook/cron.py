@@ -21,13 +21,8 @@ SET_CRON_HELP = """Specify a start and a End time. The format can be :
 Please allow at least 10 minutes between start and end time.
 """
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(
-            os.path.dirname(
-                sys.argv[0]),
-            "..",
-            "python")))
+TOPDIR = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), ".."))
+sys.path.append(os.path.join(TOPDIR, "python"))
 
 MEMCACHED_SERVERS = ["localhost:11211"]
 
@@ -85,12 +80,37 @@ def timeuntil(d):
     return timesince(now, d)
 
 
+def read_config():
+    config_file = os.path.join(TOPDIR, "config")
+    ddns_domain = ddns_login = ddns_password = None
+    if not os.path.exists(config_file):
+        return (ddns_domain, ddns_login, ddns_password)
+
+    preg = re.compile("^\s*(export\s)?(?P<variable>\w+).*=[\"']?(?P<value>[^\"'$]*)[\"']?$")
+
+    fp = open(config_file, 'r')
+    for line in fp:
+        match = preg.match(line)
+        if match and match.group("variable") == "DDNS_DOMAIN":
+            ddns_domain = match.group("value").strip()
+        elif match and match.group("variable") == "DDNS_LOGIN":
+            ddns_login = match.group("value").strip()
+        elif match and match.group("variable") == "DDNS_PASSWORD":
+            ddns_password = match.group("value").strip()
+
+    return (ddns_domain, ddns_login, ddns_password)
+
+
 class ScheduledTask(object):
     def __init__(self):
         self.mclient = memcache.Client(MEMCACHED_SERVERS, debug=0)
         self.cnx = None
         self.server_list = None
         self.sleep_time = 15
+        self.ddns_domain, self.ddns_login, self.ddns_password = read_config()
+        if not self.ddns_domain:
+            print "You need to define a DNS_DOMAIN variable with (LOGIN and PASSWORD) in your config file"
+            sys.exit(1)
 
     def setup_log(self, ttype, maxBytes=None, backupCount=7):
         maxBytes = 1024 * 1024
