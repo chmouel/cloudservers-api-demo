@@ -479,9 +479,9 @@ class ScheduledTask(object):
                 for x in self.cnx.servers.list():
                     if x.name == "demo-web1":
                         ip = x._info['addresses']['public'][0]
-                self.ssprint("\nServers has been restored, " + \
-                "Go to http://demo-web1.dyndns.info or http://%s\n" \
-                                 % (ip))
+                        self.ssprint("\nServers has been restored, " + \
+                                         "Go to http://%s or http://%s\n" \
+                                         % (os.environ['DDNS_DOMAIN'], ip))
             else:
                 if self.options.verbose:
                     iscreated = self.is_server_created()

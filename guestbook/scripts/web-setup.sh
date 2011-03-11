@@ -1,9 +1,13 @@
 #!/bin/bash
 #TODO: Networking
 GUESTBOOK_DBPASS=$1
+DDNS_DOMAIN=$2
+DDNS_LOGIN=$3
+DDNS_PASSWORD=$4
 
 if [[ -z ${GUESTBOOK_DBPASS} ]];then
-    GUESTBOOK_DBPASS="blaha331002"
+    echo "No arguments?"
+    exit 1
 fi
 
 set -e
@@ -53,9 +57,9 @@ cat <<EOF>/etc/ddclient.conf
 protocol=dyndns2
 use=web, web=checkip.dyndns.com, web-skip='IP Address'
 server=members.dyndns.org
-login=chmouelrack
-password='rackspace'
-demo-web1.dyndns.info
+login=${DDNS_LOGIN}
+password='${DDNS_PASSWORD}'
+${DDNS_DOMAIN}
 
 EOF
 service ddclient restart
