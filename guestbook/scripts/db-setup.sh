@@ -19,8 +19,13 @@ cat <<EOF>~/.my.cnf
 password = ${ADMIN_DBPASS}
 EOF
 
-#TODO: Bind only privatenet ip.
-sed -i -n '/bind-address/ { s/127.0.0.1/0.0.0.0/ };p' /etc/mysql/my.cnf
+BIND_IP=0.0.0.0
+PRIVATE_IP=$(ip addr show eth1|sed -n '/^[ ]*inet[ ]/ { s/.*inet //;s/\/.*//;p }')
+if [[ ${PRIVATE_IP} == 10.* ]];then
+    BIND_IP=${PRIVATE_IP}
+fi
+
+sed -i -n "/bind-address/ { s/127.0.0.1/${BIND_IP}/ };p" /etc/mysql/my.cnf
 
 restart mysql
 
