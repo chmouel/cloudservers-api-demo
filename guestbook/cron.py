@@ -19,7 +19,9 @@ SET_CRON_HELP = """Specify a start and a End time. The format can be :
 10 seconds
 
 Please allow at least 10 minutes between start and end time.
-"""
+
+Current time is %s
+""" % (datetime.datetime.now().strftime("%HH%M"))
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), ".."))
 sys.path.append(os.path.join(TOPDIR, "python"))
