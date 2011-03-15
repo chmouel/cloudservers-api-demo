@@ -1,5 +1,9 @@
 #!/bin/bash
 # Need latest bash features for =~ and {VARIABLE,,} tricks
+SOUT="/tmp/create-multi-${USER}.log"
+EOUT="/tmp/create-multi-${USER}-error.log"
+echo > ${SOUT}
+echo > ${EOUT}
 
 cd $(python -c 'import os,sys;print os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[1])))'  $0)
 set -e
@@ -37,7 +41,7 @@ fi
 for i in $(seq ${NUMBER});do
     name="${PREFIX}${i} "
     echo -n "Creating ${name}: "
-    python python/create.py -n ${name} -i 69 -f 1 >>/tmp/create-multi.log 2>/tmp/create-multi-error.log
+    python python/create.py -n ${name} -i ${IMAGETYPE} -f ${FLAVOUR} >>${SOUT} 2>${EOUT}
     echo "done."
 done
 

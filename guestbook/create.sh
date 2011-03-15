@@ -8,8 +8,11 @@ python python/list-servers.py|egrep -q 'demo-(web1|db1)' && {
     exit
 }
 
-echo "Starting guestbook demo. [Hint] tail /tmp/guestbook.log to see
-detailled output or /tmp/guestbook-error.log for error log."
+SOUT="/tmp/guestbook-${USER}.log"
+EOUT="/tmp/guestbook-${USER}-error.log"
+
+echo "Starting guestbook demo. [Hint] tail ${SOUT} to see
+detailled output or ${EOUT} for error log."
 
 echo "----------"
 
@@ -17,12 +20,12 @@ if [[ -e config ]];then
     source config
 fi
 
-echo > /tmp/guestbook.log
-echo > /tmp/guestbook-error.log
+echo > ${SOUT}
+echo > ${EOUT}
 
 for name in demo-web1 demo-db1;do
     echo -n "Creating ${name}: "
-    python python/create.py -n ${name} -i 69 -f 1 >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
+    python python/create.py -n ${name} -i 69 -f 1 >>${SOUT} 2>${EOUT}
     echo "done."
 done
 
@@ -45,20 +48,20 @@ echo -n "Copying files to webserver: "
 scp -q guestbook/scripts/web-setup.sh guestbook/scripts/web-networking.sh root@${PUBLIC_WEB_IP}:
 echo "done."
 echo -n "Setup webserver: "
-ssh -t root@${PUBLIC_WEB_IP} ./web-setup.sh ${GUESTBOOK_DBPASS} ${DDNS_DOMAIN} ${DDNS_LOGIN} ${DDNS_PASSWORD} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
+ssh -t root@${PUBLIC_WEB_IP} ./web-setup.sh ${GUESTBOOK_DBPASS} ${DDNS_DOMAIN} ${DDNS_LOGIN} ${DDNS_PASSWORD} >>${SOUT} 2>${EOUT}
 echo "done."
 echo -n "Setup webserver networking: "
-ssh -t root@${PUBLIC_WEB_IP} ./web-networking.sh demo-db1 ${PRIVATE_DB_IP} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
+ssh -t root@${PUBLIC_WEB_IP} ./web-networking.sh demo-db1 ${PRIVATE_DB_IP} >>${SOUT} 2>${EOUT}
 echo "done."
 
 echo -n "Copying files to dbserver: "
 scp -q guestbook/scripts/db-setup.sh guestbook/scripts/db-networking.sh root@${PUBLIC_DB_IP}:
 echo "done."
 echo -n "Setup db: "
-ssh -t root@${PUBLIC_DB_IP} ./db-setup.sh ${ADMIN_DBPASS} ${GUESTBOOK_DBPASS} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
+ssh -t root@${PUBLIC_DB_IP} ./db-setup.sh ${ADMIN_DBPASS} ${GUESTBOOK_DBPASS} >>${SOUT} 2>${EOUT}
 echo "done."
 echo -n "Setup db networking: "
-ssh -t root@${PUBLIC_DB_IP} ./db-networking.sh demo-web1 ${PRIVATE_WEB_IP} >>/tmp/guestbook.log 2>/tmp/guestbook-error.log
+ssh -t root@${PUBLIC_DB_IP} ./db-networking.sh demo-web1 ${PRIVATE_WEB_IP} >>${SOUT} 2>${EOUT}
 echo "done."
 
 echo "----------"

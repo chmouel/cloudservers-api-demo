@@ -124,7 +124,8 @@ if options.bootstrap:
 if options.script:
     copy_exec_script(cstype.public_ip, options.script)
 
-open("/tmp/server-installed.txt", 'a').write("%s - root@%s -- Password: %s\n" % (cstype.name, cstype.public_ip, cstype.adminPass))
+open("/tmp/server-installed-%s.txt" % (os.environ.get("USER", "none")), 'a').write("%s - root@%s -- Password: %s\n" % (cstype.name, cstype.public_ip, cstype.adminPass))
+#open("/tmp/server-installed.txt", 'a').write("%s - root@%s -- Password: %s\n" % (cstype.name, cstype.public_ip, cstype.adminPass))
 
 if not options.script:
     print

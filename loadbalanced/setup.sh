@@ -2,6 +2,10 @@
 mydir=$(python -c 'import os,sys;print os.path.dirname(os.path.realpath(sys.argv[1])) ' $0)
 cd $(python -c 'import os,sys;print os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[1])))'  $0)
 set -e
+SOUT="/tmp/loadbalanced-${USER}.log"
+EOUT="/tmp/loadbalanced-${USER}-error.log"
+echo > ${SOUT}
+echo > ${EOUT}
 
 ###CONFIGURATION
 CONTAINER="public"
@@ -60,7 +64,7 @@ function setup_nodes() {
         echo "done."
         
         echo -n "Starting setup for ${name}: "
-        ssh -q -t root@${ip} "/usr/local/bin/setup-node.sh" ${PRIVATE_LOADBALANCER_IP} >>/tmp/log 2>/tmp/error
+        ssh -q -t root@${ip} "/usr/local/bin/setup-node.sh" ${PRIVATE_LOADBALANCER_IP} >>${SOUT} 2>${EOUT}
         echo "done."
 
         echo -n "Copying cloudfiles wrapper to ${name}: "
@@ -75,24 +79,24 @@ function setup_loadbalancer() {
     echo "done."
 
     echo -n "Setting up loadbalancer: "
-    ssh -t root@${LOADBALANCER_IP} "/usr/local/bin/setup-loadbalancer.sh ${USER} ${API_KEY} ${AURL}" >>/tmp/log 2>/tmp/error
+    ssh -t root@${LOADBALANCER_IP} "/usr/local/bin/setup-loadbalancer.sh ${USER} ${API_KEY} ${AURL}" >>${SOUT} 2>${EOUT}
     echo "done."
 }
 
 function save_first_image() {
     echo -n "Backuping as image loadbalanced1: "
-    ./python/backup.py -s loadbalanced1 -f -b "saved" >>/tmp/log 2>/tmp/error
+    ./python/backup.py -s loadbalanced1 -f -b "saved" >>${SOUT} 2>${EOUT}
     echo "done."
 }
 
 function create_servers() {
     echo -n "Creating loadbalancer: "
-    ./python/create.py -n loadbalancer.rackspace.co.uk -f 1 -i 69 >>/tmp/log 2>/tmp/error
+    ./python/create.py -n loadbalancer.rackspace.co.uk -f 1 -i 69 >>${SOUT} 2>${EOUT}
     echo "done."
     c=1
     while true;do
         echo -n "Creating loadbalanced${c}: "
-        ./python/create.py -n loadbalanced${c}.rackspace.co.uk -f 1 -i 69 >>/tmp/log 2>/tmp/error
+        ./python/create.py -n loadbalanced${c}.rackspace.co.uk -f 1 -i 69 >>${SOUT} 2>${EOUT}
         echo " done."
         [[ $c == ${NUM_NODES} ]] && break
         (( c++ ))

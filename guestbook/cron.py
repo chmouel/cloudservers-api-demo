@@ -121,7 +121,8 @@ class ScheduledTask(object):
             u'[%(asctime)s] %(levelname)-7s: %(message)s )',
             datefmt=date_fmt)
 
-        log_name = os.path.join("/tmp/%s.log" % ttype)
+        log_name = "/tmp/guestbook-demo-%s-%s.log" % \
+            (os.environ.get("USER"), ttype)
 
         handler = logging.handlers.RotatingFileHandler(
             log_name,
