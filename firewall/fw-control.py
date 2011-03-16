@@ -25,7 +25,8 @@ Usage :
 firewall allow port XX -- allow only port XX
 firewall deny port XX -- disable port XX
 firewall disable -- Allow everything!
-firewall enable -- Enable firewall
+firewall enable -- Enable firewall.
+firewall status -- Show status of firewall.
 """
         sys.exit(0)
 
