@@ -105,7 +105,6 @@ cstype = CNX.servers.create(image=IMAGE_TYPE,
                             files={'/root/.ssh/authorized_keys' : open(os.path.expanduser("~/.ssh/id_rsa.pub"), 'r')}
                             )
 check_image(CNX, cstype.id)
-print "done."
 
 if options.delete_image:
     print "Deleting image of server"
