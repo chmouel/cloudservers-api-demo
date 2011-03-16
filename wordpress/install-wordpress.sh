@@ -8,7 +8,7 @@ echo > ${SOUT}
 echo > ${EOUT}
 
 echo -n "Installing web/db/wordpress packages (this can be long): "
-apt-get -y install wordpress mysql-server >>${SOUT} 2>${EOUT}
+apt-get -y install ufw wordpress mysql-server >>${SOUT} 2>${EOUT}
 echo "done."
 
 echo -n "Configurating apache: "
