@@ -25,7 +25,7 @@ if [[ ${PRIVATE_IP} == 10.* ]];then
     BIND_IP=${PRIVATE_IP}
 fi
 
-sed -i -n "/bind-address/ { s/127.0.0.1/${BIND_IP}/ };p" /etc/mysql/my.cnf
+sed -i -n "/bind-address/ { s/^/# / };p" /etc/mysql/my.cnf
 
 restart mysql
 
