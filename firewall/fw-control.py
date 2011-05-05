@@ -10,25 +10,22 @@ from lib.chooseserver import ChooseServer
 from lib.common import CNX
 from lib.commands import copy_exec_script
 
-if __name__ == '__main__':
-    opparser = OptionParser(usage="delete-images")
-    opparser.add_option('-s', '--server',
-                        type='string',
-                        help="Server List id/name to match")
-    (options, args) = opparser.parse_args()
+usage="""firewall -- simple firewall wrapper to OS firewall wrapper to iptables via the Cloud.
 
-    if 'help' in args:
-        print """firewall -- simple firewall wrapper to OS firewall wrapper to iptables via the Cloud.
-
-Usage :
+Examples :
 
 firewall allow port XX -- allow only port XX
 firewall deny port XX -- disable port XX
 firewall disable -- Allow everything!
 firewall enable -- Enable firewall.
-firewall status -- Show status of firewall.
-"""
-        sys.exit(0)
+firewall status -- Show status of firewall."""
+
+if __name__ == '__main__':
+    opparser = OptionParser(usage=usage)
+    opparser.add_option('-s', '--server',
+                        type='string',
+                        help="Server List id/name to match")
+    (options, args) = opparser.parse_args()    
 
     c = ChooseServer(CNX)
     if len(c.servers) == 0:
