@@ -11,7 +11,7 @@ elif [[ -x /usr/bin/lsb_release ]];then
     DISTRO=$(lsb_release -i -s)
     [[ ${DISTRO,,} == "ubuntu" ]] && DISTRO="debian"
 
-    if [[ ${DISTRO} == "ubuntu" && ! -x /usr/sbin/ufw ]];then
+    if [[ ${DISTRO,,} == "debian" && ! -x /usr/sbin/ufw ]];then
         apt-get -y install ufw
     fi
 
