@@ -13,13 +13,13 @@ else:
     if answer.lower() == "us":
         UK = False
 
-US_CLOUDUSER = os.environ['US_RCLOUD_USER']
-US_CLOUDKEY = os.environ['US_RCLOUD_KEY']
-US_AUTHSERVER = os.environ['US_RCLOUD_AURL']
+US_CLOUDUSER = os.environ.get('US_RCLOUD_USER', '')
+US_CLOUDKEY = os.environ.get('US_RCLOUD_KEY', '')
+US_AUTHSERVER = os.environ.get('US_RCLOUD_AURL', '')
 
-UK_CLOUDUSER = os.environ['UK_RCLOUD_USER']
-UK_CLOUDKEY = os.environ['UK_RCLOUD_KEY']
-UK_AUTHSERVER = os.environ['UK_RCLOUD_AURL']
+UK_CLOUDUSER = os.environ.get('UK_RCLOUD_USER', '')
+UK_CLOUDKEY = os.environ.get('UK_RCLOUD_KEY', '')
+UK_AUTHSERVER = os.environ.get('UK_RCLOUD_AURL', '')
 
 #End Configuration
 
