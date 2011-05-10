@@ -245,8 +245,8 @@ class ScheduledTask(object):
             return
 
         for image in images_list:
-            sname = image.name.replace("backup-", "")
-            if image.name.startswith("backup-") and \
+            sname = image.name.replace(BACKUP_PREFIX + '-', "")
+            if image.name.startswith(BACKUP_PREFIX + '-') and \
                     sname in SERVER_NAMES:
                 fId = self.mclient.get("demo-cron-backupFlavorId%s" % \
                                            (str(sname)))
@@ -416,7 +416,6 @@ class ScheduledTask(object):
         elif options.hard_cleanup:
             self.hard_cleanup()
             return
-        #self.hard_cleanup()
         elif options.daemon:
             #TODO: Not a proper daemon yet!
             self.run_daemon()
@@ -441,6 +440,13 @@ class ScheduledTask(object):
             if x.name in SERVER_NAMES:
                 print "Deleting: %s" % (x.name)
                 x.delete()
+        for x in self.cnx.images.list():
+            if 'created' in x._info:
+                if x.name.startswith(BACKUP_PREFIX + "-"):
+                    sname = x.name.replace(BACKUP_PREFIX + '-', "")
+                    if sname in SERVER_NAMES:
+                        print "Deleting: %s" % (x.name)
+                        x.delete()
 
     def ssprint(self, s):
         if self.options.verbose:
