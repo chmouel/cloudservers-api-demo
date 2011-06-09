@@ -1,5 +1,6 @@
 #!/bin/bash
-cd $(python -c 'import os,sys;print os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[1])))'  $0)
+BASEDIR=$(python -c 'import os,sys;print os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[1])))'  $0)
+cd ${BASEDIR}
 set -e
 
 python python/list-servers.py|egrep -q 'demo-(web1|db1)' && {
@@ -16,8 +17,8 @@ detailled output or ${EOUT} for error log."
 
 echo "----------"
 
-if [[ -e config ]];then
-    source config
+if [[ -e ${BASEDIR}/config ]];then
+    source ${BASEDIR}/config
 fi
 
 echo > ${SOUT}
