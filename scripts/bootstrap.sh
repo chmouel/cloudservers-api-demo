@@ -48,7 +48,6 @@ alias inst="apt-get -y install"
 alias remove="apt-get -y remove"
 alias g="ack-grep --color-match 'bold blue'"
 alias -g SP="|curl -F 'sprunge=<-' http://sprunge.us"
+
+export LESS="-r"
 EOF
-
-
-
