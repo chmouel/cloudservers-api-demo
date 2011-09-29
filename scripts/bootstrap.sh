@@ -1,5 +1,6 @@
 #!/bin/bash
 # sudo apt-get -y install curl  && bash  <(curl http://www.chmouel.com/pub/bootstrap.sh)
+version=$(lsb_release -c -s)
 export DEBIAN_FRONTEND=noninteractive
 set -e
 
@@ -9,7 +10,12 @@ sudo dpkg-reconfigure locales
 
 sudo sed -i '/^%admin/ { s/ALL$/NOPASSWD:ALL/ }' /etc/sudoers
 
-sudo apt-get -y install vim screen zsh-beta git-core exuberant-ctags ack-grep
+
+if [[ ${version} == natty ]];then
+    sudo sed -i '/^deb / { s/$/ multiverse/;}' /etc/apt/sources.list 
+fi
+sudo apt-get -y install vim screen git-core exuberant-ctags  zsh-beta ack-grep
+
 
 sudo update-alternatives --set editor /usr/bin/vim.basic
 
