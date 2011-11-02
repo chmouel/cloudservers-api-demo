@@ -15,7 +15,7 @@ if [[ ${version} == natty || ${version} == oneiric ]];then
     sudo sed -i '/^deb / { /universe$/ { s/$/ multiverse/;p; }}' /etc/apt/sources.list 
     sudo apt-get update
 fi
-sudo apt-get -y install vim screen git-core exuberant-ctags  zsh-beta ack-grep
+sudo apt-get -y install vim tmux screen git-core exuberant-ctags  zsh-beta ack-grep
 
 
 sudo update-alternatives --set editor /usr/bin/vim.basic
@@ -34,7 +34,7 @@ for repo in rc zsh vim emacs;do
     git clone git://github.com/chmouel/${repo}-config.git
 done
 
-for f in gitconfig gitexclude screenrc;do
+for f in gitconfig gitexclude screenrc tmux.conf;do
     ln -fs GIT/rc-config/${f} ~/.${f}
 done
 
