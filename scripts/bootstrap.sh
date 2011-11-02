@@ -8,11 +8,12 @@ sudo apt-get -y install locales
 sudo locale-gen en_GB.UTF-8
 sudo dpkg-reconfigure locales
 
-sudo sed -i '/^%admin/ { s/ALL$/NOPASSWD:ALL/ }' /etc/sudoers
+sudo sed -i '/^%sudo/ { s/ALL$/NOPASSWD:ALL/ }' /etc/sudoers
 
 
-if [[ ${version} == natty ]];then
-    sudo sed -i '/^deb / { s/$/ multiverse/;}' /etc/apt/sources.list 
+if [[ ${version} == natty || ${version} == oneiric ]];then
+    sudo sed -i '/^deb / { /universe$/ { s/$/ multiverse/;p; }}' /etc/apt/sources.list 
+    sudo apt-get update
 fi
 sudo apt-get -y install vim screen git-core exuberant-ctags  zsh-beta ack-grep
 
@@ -34,15 +35,15 @@ for repo in rc zsh vim emacs;do
 done
 
 for f in gitconfig gitexclude screenrc;do
-    ln -fs ${HOME}/GIT/rc-config/${f} ~/.${f}
+    ln -fs GIT/rc-config/${f} ~/.${f}
 done
 
-ln -fs ~/GIT/zsh-config ~/.shell
-ln -fs ~/.shell/config/zshrc ~/.zshrc
-ln -fs ~/GIT/vim-config ~/.vim
-ln -fs ~/.vim/vimrc ~/.vimrc
+ln -fs GIT/zsh-config ~/.shell
+ln -fs .shell/config/zshrc ~/.zshrc
+ln -fs GIT/vim-config ~/.vim
+ln -fs .vim/vimrc ~/.vimrc
 
-ln -fs ~/GIT/emacs-config ~/.emacs.d
+ln -fs GIT/emacs-config ~/.emacs.d
 
 echo -e "#\n#hostColor=\"yellow\"\n#userColor=\"white\"\n" > ~/.shell/hosts/${HOSTNAME%%.*}.sh
 
