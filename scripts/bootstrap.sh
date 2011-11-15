@@ -12,7 +12,10 @@ sudo sed -i '/^%sudo/ { s/ALL$/NOPASSWD:ALL/ }' /etc/sudoers
 
 
 if [[ ${version} == natty || ${version} == oneiric ]];then
-    sudo sed -i '/^deb / { /universe$/ { s/$/ multiverse/;p; }}' /etc/apt/sources.list 
+    # Old School CS
+    sudo sed -i '/^deb.*main/ { /restricted$/ { s/$/ multiverse/; }}' /etc/apt/sources.list 
+    # New School CS
+    sudo sed  -i '/^#deb .*\(multiverse\|universe\)$/ { s/^#//; }' /etc/apt/sources.list
     sudo apt-get update
 fi
 sudo apt-get -y install vim tmux screen git-core exuberant-ctags  zsh-beta ack-grep
