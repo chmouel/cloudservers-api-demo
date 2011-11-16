@@ -34,10 +34,12 @@ mkdir -p GIT
 cd GIT
 
 for repo in rc zsh vim emacs;do
+    [[ -d $repo ]] && continue
     git clone git://github.com/chmouel/${repo}-config.git
 done
 
 for f in gitconfig gitexclude screenrc tmux.conf;do
+    rm -f ~/.${f}
     ln -fs GIT/rc-config/${f} ~/.${f}
 done
 
