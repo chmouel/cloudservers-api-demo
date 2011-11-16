@@ -47,6 +47,10 @@ def parse_options():
                         type='string',
                         help="Backp prefix of image name")
 
+    opparser.add_option('-n', '--name',
+                        type='string',
+                        help="Name to backup to.")
+
 
     (options, args) = opparser.parse_args() # pylint: disable-msg=W0612
     return options
@@ -67,20 +71,24 @@ def backup_list_of_servers():
         if not answer:
             return
 
+    answer=""
     if options.backup_prefix:
         answer = options.backup_prefix
-    else:
+    elif not options.name:
         answer = raw_input("Backup prefix [backup]: ")
+        if not answer:
+            answer = "backup"
 
     if " " in answer:
         print "Spaces are not allowed"
         return
         
-    if not answer:
-        answer="backup"
     
     for x in server_list:
-        backup_name="%s-%s" % (answer, x.name)
+        if options.name:
+            backup_name = options.name
+        else:
+            backup_name="%s-%s" % (answer, x.name)
         print "Backuping %s to %s: " % (x.name, backup_name)
         b = CNX.images.create(backup_name, x.id)
         wait_for_it(CNX, b.id)
