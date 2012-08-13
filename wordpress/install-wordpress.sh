@@ -15,6 +15,7 @@ if [[ ! -x /usr/sbin/ufw ]];then
     echo "done."
 fi
 
+apt-get update
 echo -n "Installing web/db/wordpress packages (this can be long): "
 apt-get -y install vsftpd wordpress php5-curl mysql-server >>${SOUT} 2>${EOUT}
 echo "done."

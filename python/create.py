@@ -102,8 +102,8 @@ print "Creating Image, please wait...."
 cstype = CNX.servers.create(image=IMAGE_TYPE,
                             flavor=IMAGE_FLAVOUR_ID,
                             name=IMAGE_NAME,
-                            files={'/root/.ssh/authorized_keys' : open(os.path.expanduser("~/.ssh/id_rsa.pub"), 'r')}
-                            )
+                            files={'/root/.ssh/authorized_keys': open(os.path.expanduser("~/.ssh/id_rsa.pub"), 'r')}
+                           )
 check_image(CNX, cstype.id)
 
 if options.delete_image:

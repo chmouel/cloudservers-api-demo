@@ -15,6 +15,7 @@ if [[ ! -x /usr/sbin/ufw ]];then
     echo "done."
 fi
 
+apt-get -y update
 echo -n "Installing web/db/drupal packages (this can be long): "
 apt-get -y install vsftpd drupal6 mysql-server >>${SOUT} 2>${EOUT}
 echo "done."

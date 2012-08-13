@@ -39,7 +39,7 @@ class Images(object):
             return ret
 
     def __call__(self):
-        return self.all_images
+        return self.global_images
         
 if __name__ == '__main__':
     from lib.common import CNX
